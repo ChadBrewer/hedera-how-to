@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test & Deploy DApps - Complete Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.topology.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #64748b;
+            --accent: #06b6d4;
+            --surface: #f8fafc;
+            --text: #0f172a;
+            --text-muted: #64748b;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--surface);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vanta-canvas {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            margin: 2rem 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, var(--accent) 0%, #0891b2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 2rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            margin: 1rem 0;
+        }
+        
+        .code-block .comment {
+            color: #94a3b8;
+        }
+        
+        .code-block .string {
+            color: #86efac;
+        }
+        
+        .code-block .keyword {
+            color: #93c5fd;
+        }
+        
+        .code-block .function {
+            color: #fbbf24;
+        }
+        
+        .terminal-output {
+            background: #0d1117;
+            color: #c9d1d9;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 1rem 0;
+        }
+        
+        .terminal-output .prompt {
+            color: #7dd3fc;
+        }
+        
+        .terminal-output .success {
+            color: #86efac;
+        }
+        
+        .terminal-output .error {
+            color: #fca5a5;
+        }
+        
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent);
+            background: rgba(6, 182, 212, 0.1);
+        }
+        
+        .tip-box {
+            background: #f0f9ff;
+            border: 1px solid #06b6d4;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .success-box {
+            background: #dcfce7;
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .testing-framework {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #64748b;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .deployment-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .deployment-option:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.15);
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+        
+        .checklist-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cube text-white text-sm"></i>
+                    </div>
+                    <span class="font-semibold text-slate-800">DApp Mastery</span>
+                </div>
+                <div class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="create-dapp.html" class="nav-link">Create</a>
+                    <a href="#test" class="nav-link">Test & Deploy</a>
+                    <a href="ai-hedera.html" class="nav-link">AI on Hedera</a>
+                    <a href="ai-opportunities.html" class="nav-link">AI Opportunities</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg py-16 lg:py-24">
+        <div id="vanta-bg" class="absolute inset-0"></div>
+        <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+                Test & Deploy <span class="text-cyan-400">DApps</span>
+            </h1>
+            <p class="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                Master the art of testing, debugging, and deploying production-ready decentralized applications on Hedera
+            </p>
+            
+            <div class="flex justify-center">
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4">
+                    <div class="flex items-center space-x-4 text-sm text-slate-300">
+                        <span><i class="fas fa-clock mr-1"></i>60 minutes</span>
+                        <span><i class="fas fa-user-cog mr-1"></i>Intermediate</span>
+                        <span><i class="fas fa-rocket mr-1"></i>Production</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testing Overview -->
+    <section id="test" class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-vial mr-2"></i>
+                    DApp Testing Strategies
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Testing DApps requires a multi-layered approach. From unit tests to integration testing and mainnet deployment, we'll cover all the essential strategies.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="testing-framework">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-puzzle-piece text-slate-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Unit Testing</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Test individual functions and components in isolation
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• Jest or Mocha frameworks</li>
+                                <li>• Mock Hedera transactions</li>
+                                <li>• Test error handling</li>
+                                <li>• Coverage reporting</li>
+                            </ul>
+                        </div>
+
+                        <div class="testing-framework">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-link text-slate-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Integration Testing</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Test complete workflows on testnet
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• Real network interactions</li>
+                                <li>• End-to-end workflows</li>
+                                <li>• Transaction verification</li>
+                                <li>• HashScan validation</li>
+                            </ul>
+                        </div>
+
+                        <div class="testing-framework">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-shield-alt text-slate-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Security Testing</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Identify vulnerabilities before deployment
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• Key management audit</li>
+                                <li>• Access control testing</li>
+                                <li>• Transaction validation</li>
+                                <li>• Error handling review</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-exclamation-triangle text-amber-600 mr-2"></i>
+                            <strong>Testing Best Practices</strong>
+                        </div>
+                        <ul class="text-sm text-amber-700 space-y-1">
+                            <li>• Never use mainnet credentials in tests</li>
+                            <li>• Always test with small amounts first</li>
+                            <li>• Verify transactions on HashScan before proceeding</li>
+                            <li>• Test error conditions and edge cases</li>
+                            <li>• Document expected vs actual behavior</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testing Setup -->
+    <section class="py-12 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-tools mr-2"></i>
+                    Setting Up Testing Environment
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Let's set up a comprehensive testing environment with multiple testing frameworks and utilities.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Step 1: Install Testing Dependencies</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># Install testing frameworks and utilities
+</div>
+                        <div><span class="text-white">npm install --save-dev jest @types/jest</span></div>
+                        <div><span class="text-white">npm install --save-dev supertest</span></div>
+                        <div><span class="text-white">npm install --save-dev nodemon</span></div>
+                        <div><span class="text-white">npm install --save-dev eslint prettier</span></div>
+                        <div class="text-gray-400 mt-2"># Install Hedera testing utilities
+</div>
+                        <div><span class="text-white">npm install --save-dev @hashgraph/sdk</span></div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Step 2: Configure Jest</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># jest.config.js</div>
+                        <div><span class="keyword">module.exports</span> = {</div>
+                        <div class="ml-4">testEnvironment: <span class="string">'node'</span>,</div>
+                        <div class="ml-4">testMatch: [<span class="string">'**/__tests__/**/*.js'</span>, <span class="string">'**/?(*.)+(spec|test).js'</span>],</div>
+                        <div class="ml-4">collectCoverageFrom: [</div>
+                        <div class="ml-8"><span class="string">'src/**/*.js'</span>,</div>
+                        <div class="ml-8"><span class="string">'!src/index.js'</span></div>
+                        <div class="ml-4">],</div>
+                        <div class="ml-4">coverageThreshold: {</div>
+                        <div class="ml-8">global: {</div>
+                        <div class="ml-12">branches: <span class="string">80'</span>,</div>
+                        <div class="ml-12">functions: <span class="string">80'</span>,</div>
+                        <div class="ml-12">lines: <span class="string">80'</span>,</div>
+                        <div class="ml-12">statements: <span class="string">80'</span></div>
+                        <div class="ml-8">}</div>
+                        <div class="ml-4">},</div>
+                        <div class="ml-4">setupFilesAfterEnv: [<span class="string">'<rootDir>/tests/setup.js'</span>]</div>
+                        <div>};</div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Step 3: Create Test Directory Structure</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># Create test directories
+</div>
+                        <div><span class="text-white">mkdir -p tests/unit tests/integration tests/e2e tests/fixtures</span></div>
+                        <div><span class="text-white">touch tests/setup.js tests/utils.js</span></div>
+                    </div>
+
+                    <div class="terminal-output">
+                        <div>tests/</div>
+                        <div>├── setup.js</div>
+                        <div>├── utils.js</div>
+                        <div>├── fixtures/</div>
+                        <div>│   └── test-data.json</div>
+                        <div>├── unit/</div>
+                        <div>│   ├── client.test.js</div>
+                        <div>│   └── transactions.test.js</div>
+                        <div>├── integration/</div>
+                        <div>│   └── dapp-flow.test.js</div>
+                        <div>└── e2e/
+                        </div>
+                        <div>    └── mainnet-ready.test.js</div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Step 4: Create Test Setup</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># tests/setup.js</div>
+                        <div><span class="keyword">const</span> { <span class="function">Client</span>, <span class="function">AccountId</span>, <span class="function">PrivateKey</span> } = <span class="function">require</span>(<span class="string">'@hashgraph/sdk'</span>);</div>
+                        <div></div>
+                        <div><span class="comment">// Global test configuration</span></div>
+                        <div><span class="function">beforeAll</span>(() => {</div>
+                        <div class="ml-4"><span class="comment">// Set longer timeout for Hedera operations</span></div>
+                        <div class="ml-4">jest.<span class="function">setTimeout</span>(<span class="string">30000'</span>);</div>
+                        <div>});</div>
+                        <div></div>
+                        <div><span class="comment">// Global test utilities</span></div>
+                        <div><span class="keyword">global</span>.<span class="function">createTestClient</span> = () => {</div>
+                        <div class="ml-4"><span class="keyword">const</span> client = <span class="function">Client</span>.<span class="function">forTestnet</span>();</div>
+                        <div class="ml-4">client.<span class="function">setOperator</span>(</div>
+                        <div class="ml-8"><span class="function">AccountId</span>.<span class="function">fromString</span>(process.env.<span class="string">TEST_OPERATOR_ID</span>),</div>
+                        <div class="ml-8"><span class="function">PrivateKey</span>.<span class="function">fromString</span>(process.env.<span class="string">TEST_OPERATOR_KEY</span>)</div>
+                        <div class="ml-4">);</div>
+                        <div class="ml-4"><span class="keyword">return</span> client;</div>
+                        <div>};</div>
+                        <div></div>
+                        <div><span class="comment">// Cleanup after all tests</span></div>
+                        <div><span class="function">afterAll</span>(() => {</div>
+                        <div class="ml-4"><span class="comment">// Any global cleanup</span></div>
+                        <div>});</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unit Testing -->
+    <section class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-microscope mr-2"></i>
+                    Unit Testing DApp Components
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Let's create comprehensive unit tests for our DApp components, including mocking and error handling.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Client Unit Tests</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># tests/unit/client.test.js</div>
+                        <div><span class="keyword">const</span> <span class="function">HederaClient</span> = <span class="function">require</span>(<span class="string">'../../src/client'</span>);</div>
+                        <div><span class="keyword">const</span> { <span class="function">Client</span> } = <span class="function">require</span>(<span class="string">'@hashgraph/sdk'</span>);</div>
+                        <div></div>
+                        <div><span class="function">describe</span>(<span class="string">'HederaClient'</span>, () => {</div>
+                        <div class="ml-4"><span class="keyword">let</span> client;</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">beforeEach</span>(() => {</div>
+                        <div class="ml-8">client = <span class="keyword">new</span> <span class="function">HederaClient</span>();</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">describe</span>(<span class="string">'initialization'</span>, () => {</div>
+                        <div class="ml-8"><span class="function">test</span>(<span class="string">'should initialize with testnet by default'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-12"><span class="comment">// Mock environment variables</span></div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_ID</span> = <span class="string">'0.0.123456'</span>;</div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_KEY</span> = <span class="string">'302e020100300506032b657004220420...'</span>;</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">await</span> client.<span class="function">initialize</span>();</div>
+                        <div></div>
+                        <div class="ml-12"><span class="function">expect</span>(client.hederaClient).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-12"><span class="function">expect</span>(client.operatorId).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-8">});</div>
+                        <div></div>
+                        <div class="ml-8"><span class="function">test</span>(<span class="string">'should handle missing environment variables'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-12"><span class="comment">// Clear environment variables</span></div>
+                        <div class="ml-12"><span class="keyword">delete</span> process.env.<span class="string">OPERATOR_ID</span>;</div>
+                        <div class="ml-12"><span class="keyword">delete</span> process.env.<span class="string">OPERATOR_KEY</span>;</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">await</span> <span class="function">expect</span>(client.<span class="function">initialize</span>()).<span class="function">rejects</span>.<span class="function">toThrow</span>();</div>
+                        <div class="ml-8">});</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">describe</span>(<span class="string">'network selection'</span>, () => {</div>
+                        <div class="ml-8"><span class="function">test</span>(<span class="string">'should use mainnet when specified'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-12">process.env.<span class="string">NETWORK</span> = <span class="string">'mainnet'</span>;</div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_ID</span> = <span class="string">'0.0.123456'</span>;</div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_KEY</span> = <span class="string">'302e020100300506032b657004220420...'</span>;</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">await</span> client.<span class="function">initialize</span>();</div>
+                        <div></div>
+                        <div class="ml-12"><span class="comment">// Verify client is configured for mainnet</span></div>
+                        <div class="ml-12"><span class="function">expect</span>(client.hederaClient).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-8">});</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">describe</span>(<span class="string">'resource management'</span>, () => {</div>
+                        <div class="ml-8"><span class="function">test</span>(<span class="string">'should close client connection'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_ID</span> = <span class="string">'0.0.123456'</span>;</div>
+                        <div class="ml-12">process.env.<span class="string">OPERATOR_KEY</span> = <span class="string">'302e020100300506032b657004220420...'</span>;</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">await</span> client.<span class="function">initialize</span>();</div>
+                        <div class="ml-12"><span class="keyword">await</span> client.<span class="function">close</span>();</div>
+                        <div></div>
+                        <div class="ml-12"><span class="comment">// No errors should be thrown</span></div>
+                        <div class="ml-12"><span class="function">expect</span>(client.hederaClient).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-8">});</div>
+                        <div class="ml-4">});</div>
+                        <div>});</div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4 mt-6">Transaction Handler Tests</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># tests/unit/transactions.test.js</div>
+                        <div><span class="keyword">const</span> <span class="function">TransactionHandler</span> = <span class="function">require</span>(<span class="string">'../../src/transactions'</span>);</div>
+                        <div><span class="keyword">const</span> { <span class="function">Client</span>, <span class="function">AccountId</span> } = <span class="function">require</span>(<span class="string">'@hashgraph/sdk'</span>);</div>
+                        <div></div>
+                        <div><span class="comment">// Mock client for testing</span></div>
+                        <div><span class="keyword">const</span> <span class="function">createMockClient</span> = () => {</div>
+                        <div class="ml-4"><span class="keyword">const</span> client = <span class="function">Client</span>.<span class="function">forTestnet</span>();</div>
+                        <div class="ml-4">client.<span class="function">setOperator</span>(</div>
+                        <div class="ml-8"><span class="function">AccountId</span>.<span class="function">fromString</span>(<span class="string">'0.0.123456'</span>),</div>
+                        <div class="ml-8"><span class="function">PrivateKey</span>.<span class="function">generate</span>()</div>
+                        <div class="ml-4">);</div>
+                        <div class="ml-4"><span class="keyword">return</span> client;</div>
+                        <div>};</div>
+                        <div></div>
+                        <div><span class="function">describe</span>(<span class="string">'TransactionHandler'</span>, () => {</div>
+                        <div class="ml-4"><span class="keyword">let</span> handler;</div>
+                        <div class="ml-4"><span class="keyword">let</span> mockClient;</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">beforeEach</span>(() => {</div>
+                        <div class="ml-8">mockClient = <span class="function">createMockClient</span>();</div>
+                        <div class="ml-8">handler = <span class="keyword">new</span> <span class="function">TransactionHandler</span>(mockClient);</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">describe</span>(<span class="string">'balance checking'</span>, () => {</div>
+                        <div class="ml-8"><span class="function">test</span>(<span class="string">'should check account balance successfully'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-12"><span class="comment">// Mock the balance query</span></div>
+                        <div class="ml-12"><span class="keyword">const</span> mockBalance = {</div>
+                        <div class="ml-16">hbars: { <span class="function">toString</span>: () => <span class="string">'1000 ℏ'</span> }</div>
+                        <div class="ml-12">};</div>
+                        <div></div>
+                        <div class="ml-12"><span class="comment">// Mock the execute method</span></div>
+                        <div class="ml-12">mockClient.<span class="function">execute</span> = jest.<span class="function">fn</span>().<span class="function">mockResolvedValue</span>(mockBalance);</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">const</span> consoleSpy = jest.<span class="function">spyOn</span>(console, <span class="string">'log'</span>);</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">await</span> handler.<span class="function">checkBalance</span>(<span class="function">AccountId</span>.<span class="function">fromString</span>(<span class="string">'0.0.123456'</span>));</div>
+                        <div></div>
+                        <div class="ml-12"><span class="function">expect</span>(consoleSpy).<span class="function">toHaveBeenCalledWith</span>(</div>
+                        <div class="ml-16"><span class="function">expect</span>.<span class="function">stringContaining</span>(<span class="string">'Balance for'</span>)</div>
+                        <div class="ml-12">);</div>
+                        <div class="ml-8">});</div>
+                        <div class="ml-4">});</div>
+                        <div>});</div>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            <strong>Unit Testing Benefits</strong>
+                        </div>
+                        <ul class="text-sm text-green-700 space-y-1">
+                            <li>• Fast feedback during development</li>
+                            <li>• Isolated component testing</li>
+                            <li>• Mock external dependencies</li>
+                            <li>• Comprehensive error scenario coverage</li>
+                            <li>• Automated CI/CD integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Testing -->
+    <section class="py-12 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-link mr-2"></i>
+                    Integration Testing on Testnet
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Integration tests verify that your DApp components work together correctly on a live network. We'll test on testnet to ensure real-world functionality.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Integration Test Setup</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># tests/integration/dapp-flow.test.js</div>
+                        <div><span class="keyword">const</span> <span class="function">HederaClient</span> = <span class="function">require</span>(<span class="string">'../../src/client'</span>);</div>
+                        <div><span class="keyword">const</span> <span class="function">TransactionHandler</span> = <span class="function">require</span>(<span class="string">'../../src/transactions'</span>);</div>
+                        <div><span class="keyword">const</span> { <span class="function">AccountId</span> } = <span class="function">require</span>(<span class="string">'@hashgraph/sdk'</span>);</div>
+                        <div></div>
+                        <div><span class="comment">// Integration test with real Hedera testnet</span></div>
+                        <div><span class="function">describe</span>(<span class="string">'DApp Integration Flow'</span>, () => {</div>
+                        <div class="ml-4"><span class="keyword">let</span> client;</div>
+                        <div class="ml-4"><span class="keyword">let</span> transactionHandler;</div>
+                        <div class="ml-4"><span class="keyword">let</span> topicId;</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">beforeAll</span>(<span class="keyword">async</span> () => {</div>
+                        <div class="ml-8"><span class="comment">// Initialize test client</span></div>
+                        <div class="ml-8">client = <span class="keyword">new</span> <span class="function">HederaClient</span>();</div>
+                        <div class="ml-8"><span class="keyword">await</span> client.<span class="function">initialize</span>();</div>
+                        <div></div>
+                        <div class="ml-8">transactionHandler = <span class="keyword">new</span> <span class="function">TransactionHandler</span>(client.<span class="function">getClient</span>());</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">afterAll</span>(<span class="keyword">async</span> () => {</div>
+                        <div class="ml-8"><span class="keyword">await</span> client.<span class="function">close</span>();</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">test</span>(<span class="string">'should complete full DApp workflow'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-8"><span class="comment">// Step 1: Check initial balance</span></div>
+                        <div class="ml-8"><span class="keyword">const</span> initialBalance = <span class="keyword">await</span> transactionHandler.<span class="function">checkBalance</span>(client.operatorId);</div>
+                        <div class="ml-8"><span class="function">expect</span>(initialBalance).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-8"><span class="function">expect</span>(initialBalance.hbars).<span class="function">toBeDefined</span>();</div>
+                        <div></div>
+                        <div class="ml-8"><span class="comment">// Step 2: Create HCS topic</span></div>
+                        <div class="ml-8">topicId = <span class="keyword">await</span> transactionHandler.<span class="function">createTopic</span>(<span class="string">'Integration Test Topic'</span>);</div>
+                        <div class="ml-8"><span class="function">expect</span>(topicId).<span class="function">toBeDefined</span>();</div>
+                        <div class="ml-8"><span class="function">expect</span>(topicId.toString()).<span class="function">toMatch</span>(<span class="string">/^0\.0\.\d+$/</span>);</div>
+                        <div></div>
+                        <div class="ml-8"><span class="comment">// Step 3: Send multiple messages</span></div>
+                        <div class="ml-8"><span class="keyword">const</span> messages = [</div>
+                        <div class="ml-12"><span class="string">'Integration test message 1'</span>,</div>
+                        <div class="ml-12"><span class="string">'Integration test message 2'</span></div>
+                        <div class="ml-8">];</div>
+                        <div></div>
+                        <div class="ml-8"><span class="keyword">for</span> (<span class="keyword">const</span> message <span class="keyword">of</span> messages) {</div>
+                        <div class="ml-12"><span class="keyword">const</span> receipt = <span class="keyword">await</span> transactionHandler.<span class="function">sendMessage</span>(topicId, message);</div>
+                        <div class="ml-12"><span class="function">expect</span>(receipt.status.toString()).<span class="function">toBe</span>(<span class="string">'SUCCESS'</span>);</div>
+                        <div class="ml-8">}</div>
+                        <div></div>
+                        <div class="ml-8"><span class="comment">// Step 4: Verify final balance</span></div>
+                        <div class="ml-8"><span class="keyword">const</span> finalBalance = <span class="keyword">await</span> transactionHandler.<span class="function">checkBalance</span>(client.operatorId);</div>
+                        <div class="ml-8"><span class="function">expect</span>(finalBalance).<span class="function">toBeDefined</span>();</div>
+                        <div></div>
+                        <div class="ml-8"><span class="comment">// Verify balance decreased (transaction fees paid)</span></div>
+                        <div class="ml-8"><span class="keyword">const</span> initialHbars = <span class="function">parseFloat</span>(initialBalance.hbars.toString());</div>
+                        <div class="ml-8"><span class="keyword">const</span> finalHbars = <span class="function">parseFloat</span>(finalBalance.hbars.toString());</div>
+                        <div class="ml-8"><span class="function">expect</span>(finalHbars).<span class="function">toBeLessThan</span>(initialHbars);</div>
+                        <div class="ml-4">});</div>
+                        <div></div>
+                        <div class="ml-4"><span class="function">test</span>(<span class="string">'should handle errors gracefully'</span>, <span class="keyword">async</span> () => {</div>
+                        <div class="ml-8"><span class="comment">// Test with invalid topic ID</span></div>
+                        <div class="ml-8"><span class="keyword">const</span> invalidTopicId = <span class="function">AccountId</span>.<span class="function">fromString</span>(<span class="string">'0.0.999999'</span>);</div>
+                        <div></div>
+                        <div class="ml-8"><span class="keyword">await</span> <span class="function">expect</span>(</div>
+                        <div class="ml-12">transactionHandler.<span class="function">sendMessage</span>(invalidTopicId, <span class="string">'Test message'</span>)</div>
+                        <div class="ml-8">).<span class="function">rejects</span>.<span class="function">toThrow</span>();</div>
+                        <div class="ml-4">});</div>
+                        <div>});</div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-lightbulb text-cyan-600 mr-2"></i>
+                            <strong>Integration Testing Tips</strong>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Use separate test accounts for isolation</li>
+                            <li>• Test on testnet, not mainnet</li>
+                            <li>• Verify transactions on HashScan</li>
+                            <li>• Test error conditions and edge cases</li>
+                            <li>• Clean up resources after tests</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deployment Strategies -->
+    <section class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Deployment Strategies
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Deploying to mainnet requires careful planning and security measures. Let's explore different deployment strategies and best practices.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="deployment-option">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-cloud text-green-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Cloud Deployment</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Deploy DApps to cloud platforms for scalability and reliability
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• AWS Lambda + API Gateway</li>
+                                <li>• Google Cloud Functions</li>
+                                <li>• Azure Functions</li>
+                                <li>• Heroku or Railway</li>
+                            </ul>
+                            <div class="mt-3">
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Recommended</span>
+                            </div>
+                        </div>
+
+                        <div class="deployment-option">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-server text-blue-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Self-Hosted</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Run DApps on your own infrastructure for maximum control
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• VPS or dedicated servers</li>
+                                <li>• Docker containers</li>
+                                <li>• Kubernetes orchestration</li>
+                                <li>• Load balancing</li>
+                            </ul>
+                            <div class="mt-3">
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Advanced</span>
+                            </div>
+                        </div>
+
+                        <div class="deployment-option">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-globe text-purple-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Edge Deployment</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Deploy closer to users for better performance
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• Cloudflare Workers</li>
+                                <li>• Vercel Edge Functions</li>
+                                <li>• Netlify Edge</li>
+                                <li>• Fastly Compute@Edge</li>
+                            </ul>
+                            <div class="mt-3">
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Performance</span>
+                            </div>
+                        </div>
+
+                        <div class="deployment-option">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-mobile-alt text-orange-600 text-2xl mr-3"></i>
+                                <h3 class="text-lg font-semibold text-slate-800">Mobile/IoT</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-3">
+                                Deploy DApps to mobile and IoT devices
+                            </p>
+                            <ul class="text-xs text-slate-500 space-y-1">
+                                <li>• React Native apps</li>
+                                <li>• Progressive Web Apps</li>
+                                <li>• IoT device integration</li>
+                                <li>• Offline capabilities</li>
+                            </ul>
+                            <div class="mt-3">
+                                <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Emerging</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Mainnet Deployment Checklist</h3>
+                    
+                    <div class="bg-slate-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-semibold text-slate-700 mb-3">Pre-Deployment</h4>
+                        <div class="space-y-2">
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Fund mainnet account with sufficient HBAR</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Update environment variables for mainnet</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Test all functionality on testnet</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Review and audit smart contract code</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Set up monitoring and alerting</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-semibold text-slate-700 mb-3">Security & Operations</h4>
+                        <div class="space-y-2">
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Use environment variables for sensitive data</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Implement proper error handling</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Set up logging and monitoring</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Configure backup and recovery procedures</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" class="deployment-check">
+                                <span>Plan for scaling and load balancing</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Mainnet Configuration</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># .env.mainnet</div>
+                        <div><span class="text-cyan-400">OPERATOR_ID</span><span class="text-white">=0.0.YOUR_MAINNET_ACCOUNT</span></div>
+                        <div><span class="text-cyan-400">OPERATOR_KEY</span><span class="text-white">=YOUR_MAINNET_PRIVATE_KEY</span></div>
+                        <div><span class="text-cyan-400">NETWORK</span><span class="text-white">=mainnet</span></div>
+                        <div><span class="text-cyan-400">MIRROR_NODE_URL</span><span class="text-white">=https://mainnet-public.mirrornode.hedera.com</span></div>
+                        <div></div>
+                        <div class="text-gray-400 mt-2"># deployment.config.js</div>
+                        <div><span class="keyword">const</span> deploymentConfig = {</div>
+                        <div class="ml-4">network: <span class="string">'mainnet'</span>,</div>
+                        <div class="ml-4">monitoring: {</div>
+                        <div class="ml-8">enabled: <span class="keyword">true</span>,</div>
+                        <div class="ml-8">webhook: process.env.<span class="string">MONITORING_WEBHOOK</span></div>
+                        <div class="ml-4">},</div>
+                        <div class="ml-4">logging: {</div>
+                        <div class="ml-8">level: <span class="string">'info'</span>,</div>
+                        <div class="ml-8">file: <span class="string">'./logs/dapp.log'</span></div>
+                        <div class="ml-4">},</div>
+                        <div class="ml-4">security: {</div>
+                        <div class="ml-8">rateLimiting: <span class="keyword">true</span>,</div>
+                        <div class="ml-8">cors: <span class="keyword">true</span></div>
+                        <div class="ml-4">}</div>
+                        <div>};</div>
+                        <div></div>
+                        <div><span class="keyword">module.exports</span> = deploymentConfig;</div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-shield-alt text-amber-600 mr-2"></i>
+                            <strong>Mainnet Security Considerations</strong>
+                        </div>
+                        <ul class="text-sm text-amber-700 space-y-1">
+                            <li>• Never expose private keys in code or logs</li>
+                            <li>• Use separate accounts for different environments</li>
+                            <li>• Implement rate limiting and DDoS protection</li>
+                            <li>• Monitor transaction costs and set limits</li>
+                            <li>• Have a rollback plan for emergencies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monitoring and Maintenance -->
+    <section class="py-12 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Monitoring & Maintenance
+                </div>
+                <div class="section-content">
+                    <p class="text-slate-600 mb-6">
+                        Production DApps require continuous monitoring and maintenance. Set up comprehensive observability to ensure your application runs smoothly.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-heartbeat text-red-500 text-xl mr-2"></i>
+                                <h4 class="font-semibold text-slate-700">Health Checks</h4>
+                            </div>
+                            <ul class="text-sm text-slate-600 space-y-1">
+                                <li>• API endpoint monitoring</li>
+                                <li>• Transaction success rates</li>
+                                <li>• Response time tracking</li>
+                                <li>• Error rate alerts</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-coins text-yellow-500 text-xl mr-2"></i>
+                                <h4 class="font-semibold text-slate-700">Cost Monitoring</h4>
+                            </div>
+                            <ul class="text-sm text-slate-600 space-y-1">
+                                <li>• HBAR balance tracking</li>
+                                <li>• Transaction cost analysis</li>
+                                <li>• Budget alerts</li>
+                                <li>• Cost optimization</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-users text-blue-500 text-xl mr-2"></i>
+                                <h4 class="font-semibold text-slate-700">Usage Analytics</h4>
+                            </div>
+                            <ul class="text-sm text-slate-600 space-y-1">
+                                <li>• User interaction tracking</li>
+                                <li>• Feature usage metrics</li>
+                                <li>• Performance insights</li>
+                                <li>• User experience optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Monitoring Setup</h3>
+                    
+                    <div class="code-block">
+                        <div class="text-gray-400"># monitoring/health-check.js</div>
+                        <div><span class="keyword">const</span> axios = <span class="function">require</span>(<span class="string">'axios'</span>);</div>
+                        <div><span class="keyword">const</span> { <span class="function">Client</span>, <span class="function">AccountId</span> } = <span class="function">require</span>(<span class="string">'@hashgraph/sdk'</span>);</div>
+                        <div></div>
+                        <div><span class="keyword">class</span> <span class="function">HealthMonitor</span> {</div>
+                        <div class="ml-4"><span class="function">constructor</span>(client, config) {</div>
+                        <div class="ml-8"><span class="keyword">this</span>.client = client;</div>
+                        <div class="ml-8"><span class="keyword">this</span>.config = config;</div>
+                        <div class="ml-8"><span class="keyword">this</span>.isHealthy = <span class="keyword">true</span>;</div>
+                        <div class="ml-4">}</div>
+                        <div></div>
+                        <div class="ml-4"><span class="keyword">async</span> <span class="function">checkHealth</span>() {</div>
+                        <div class="ml-8"><span class="keyword">try</span> {</div>
+                        <div class="ml-12"><span class="comment">// Check account balance</span></div>
+                        <div class="ml-12"><span class="keyword">const</span> balance = <span class="keyword">await</span> <span class="keyword">new</span> <span class="function">AccountBalanceQuery</span>()</div>
+                        <div class="ml-16">.<span class="function">setAccountId</span>(<span class="keyword">this</span>.config.operatorId)</div>
+                        <div class="ml-16">.<span class="function">execute</span>(<span class="keyword">this</span>.client);</div>
+                        <div></div>
+                        <div class="ml-12"><span class="comment">// Check if balance is above threshold</span></div>
+                        <div class="ml-12"><span class="keyword">const</span> balanceHbar = balance.hbars.<span class="function">to</span>(<span class="string">'hbars'</span>);</div>
+                        <div class="ml-12"><span class="keyword">if</span> (balanceHbar < <span class="keyword">this</span>.config.minBalance) {</div>
+                        <div class="ml-16"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'Low balance warning'</span>);</div>
+                        <div class="ml-12">}</div>
+                        <div></div>
+                        <div class="ml-12"><span class="comment">// Send health check webhook</span></div>
+                        <div class="ml-12"><span class="keyword">if</span> (<span class="keyword">this</span>.config.webhookUrl) {</div>
+                        <div class="ml-16"><span class="keyword">await</span> <span class="function">axios</span>.<span class="function">post</span>(<span class="keyword">this</span>.config.webhookUrl, {</div>
+                        <div class="ml-20">status: <span class="string">'healthy'</span>,</div>
+                        <div class="ml-20">balance: balanceHbar.toString(),</div>
+                        <div class="ml-20">timestamp: <span class="keyword">new</span> <span class="function">Date</span>().<span class="function">toISOString</span>()</div>
+                        <div class="ml-16">});</div>
+                        <div class="ml-12">}</div>
+                        <div></div>
+                        <div class="ml-12"><span class="keyword">this</span>.isHealthy = <span class="keyword">true</span>;</div>
+                        <div class="ml-12"><span class="keyword">return</span> { healthy: <span class="keyword">true</span>, balance: balanceHbar.toString() };</div>
+                        <div></div>
+                        <div class="ml-8">} <span class="keyword">catch</span> (error) {</div>
+                        <div class="ml-12"><span class="function">console.error</span>(<span class="string">'Health check failed:'</span>, error.message);</div>
+                        <div class="ml-12"><span class="keyword">this</span>.isHealthy = <span class="keyword">false</span>;</div>
+                        <div class="ml-12"><span class="keyword">return</span> { healthy: <span class="keyword">false</span>, error: error.message };</div>
+                        <div class="ml-8">}</div>
+                        <div class="ml-4">}</div>
+                        <div>}</div>
+                        <div></div>
+                        <div><span class="keyword">module.exports</span> = <span class="function">HealthMonitor</span>;</div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Maintenance Schedule</h3>
+                    
+                    <div class="bg-white rounded-lg p-4 border border-slate-200">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2">Daily Tasks</h4>
+                                <ul class="text-sm text-slate-600 space-y-1">
+                                    <li>• Check error logs</li>
+                                    <li>• Monitor account balances</li>
+                                    <li>• Review transaction success rates</li>
+                                    <li>• Verify system health</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold text-slate-700 mb-2">Weekly Tasks</h4>
+                                <ul class="text-sm text-slate-600 space-y-1">
+                                    <li>• Update dependencies</li>
+                                    <li>• Review security alerts</li>
+                                    <li>• Analyze usage patterns</li>
+                                    <li>• Performance optimization</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Section -->
+    <section class="py-16 bg-gradient-to-br from-green-50 to-emerald-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-3xl mx-auto">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-rocket text-white text-2xl"></i>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">🚀 Ready for Production!</h2>
+                
+                <div class="space-y-4 text-lg text-slate-600">
+                    <p>You now have the complete toolkit for testing and deploying production-ready DApps on Hedera</p>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white rounded-xl border border-green-200">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">Your Production Toolkit</h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-vial text-blue-600"></i>
+                            </div>
+                            <strong>Comprehensive Testing</strong>
+                            <p class="text-slate-600 text-xs mt-1">Unit, integration, and E2E tests</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-shield-alt text-green-600"></i>
+                            </div>
+                            <strong>Security Best Practices</strong>
+                            <p class="text-slate-600 text-xs mt-1">Key management and audit trails</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-chart-line text-purple-600"></i>
+                            </div>
+                            <strong>Production Monitoring</strong>
+                            <p class="text-slate-600 text-xs mt-1">Health checks and analytics</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <a href="ai-hedera.html" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                        Next: AI Integration <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cube text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-semibold text-white">DApp Mastery</span>
+                </div>
+                
+                <p class="text-slate-400 mb-6">
+                    Empowering developers to build the decentralized future on Hedera Hashgraph
+                </p>
+                
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="https://github.com" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://hedera.com" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-globe text-xl"></i>
+                    </a>
+                    <a href="https://docs.hedera.com" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-book text-xl"></i>
+                    </a>
+                </div>
+                
+                <p class="text-sm text-slate-500">
+                    © 2024 DApp Mastery. Educational content for the Hedera developer community.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Vanta.js background
+        VANTA.TOPOLOGY({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x06b6d4,
+            backgroundColor: 0x0f172a
+        });
+
+        // Checklist functionality
+        document.querySelectorAll('.deployment-check').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const item = this.closest('.checklist-item');
+                if (this.checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+                
+                // Update progress
+                updateDeploymentProgress();
+            });
+        });
+
+        function updateDeploymentProgress() {
+            const totalItems = document.querySelectorAll('.deployment-check').length;
+            const completedItems = document.querySelectorAll('.deployment-check:checked').length;
+            const progress = (completedItems / totalItems) * 100;
+            
+            // You could add a progress bar here if desired
+            console.log(`Deployment progress: ${progress.toFixed(1)}%`);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-white/95');
+                nav.classList.remove('bg-white/80');
+            } else {
+                nav.classList.add('bg-white/80');
+                nav.classList.remove('bg-white/95');
+            }
+        });
+
+        // Animate section cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all section cards
+        document.querySelectorAll('.section-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "ai-agent-reputation-dapp",
+  "version": "1.0.0",
+  "description": "AI Agent Reputation & Task Ledger DApp on Hedera Testnet",
+  "main": "ai-agent-reputation.js",
+  "scripts": {
+    "start": "node ai-agent-reputation.js",
+    "test-external": "node test-external-submit.js",
+    "setup": "npm install"
+  },
+  "keywords": [
+    "hedera",
+    "blockchain",
+    "ai",
+    "reputation",
+    "dapp",
+    "hcs",
+    "hip-991"
+  ],
+  "author": "AI Agent Developer",
+  "license": "MIT",
+  "dependencies": {
+    "@hashgraph/sdk": "^2.49.0",
+    "dotenv": "^16.4.5"
+  }
+}
